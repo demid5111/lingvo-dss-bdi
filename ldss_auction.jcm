@@ -21,6 +21,11 @@ mas auction_ag {
 	agent francois: participant.asl
 	agent giacomo : participant.asl
     
+    workspace market_place {
+        artifact auction1 : ldss_auction.AuctionArtifact() {
+            focused-by: bob, alice, maria, francois, giacomo
+        }
+    }
     
     // agent source path
     asl-path: src/agt
