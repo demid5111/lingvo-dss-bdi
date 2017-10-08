@@ -3,10 +3,22 @@
 package ldss_auction;
 
 import jason.asSyntax.Atom;
+import jia.Constants;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import cartago.*;
 
 public class AuctionArtifact extends Artifact {
     String currentWinner = "no_winner";
+    
+    // temporary storage for agent estimations
+ 	private static Map<String, String> estimates;
+ 	static
+     {
+ 		estimates = new HashMap<String, String>();
+     }
 
     public void init()  {
         // observable properties
@@ -28,22 +40,31 @@ public class AuctionArtifact extends Artifact {
     public void stop()  {
         if (! getObsProperty("running").stringValue().equals("yes"))
             failed("The protocol is not running, why to stop it?!");
-
+        
+        // general logic to handle stop of all procedures
         getObsProperty("running").updateValue("no");
         getObsProperty("winner").updateValue(new Atom(currentWinner));
     }
 
+    @OPERATION
+    public void aggregateAndChooseBest() {
+    	// 1. perform calculation here
+    	
+    	// 2. set the winner
+    	currentWinner = getCurrentOpAgentId().getAgentName();
+    }
+    
     @OPERATION 
-    public void bid(double bidValue) {
+    public void bid(String bidValue) {
         if (getObsProperty("running").stringValue().equals("no"))
             failed("You can not bid for this auction, it is not running!");
 
-        ObsProperty opCurrentValue  = getObsProperty("best_bid");
-        if (bidValue < opCurrentValue.doubleValue()) {  // the bid is better than the previous
-            opCurrentValue.updateValue(bidValue);
-            currentWinner = getCurrentOpAgentId().getAgentName(); // the name of the agent doing this operation
-        }
-        System.out.println("Received bid "+bidValue+" from "+getCurrentOpAgentId().getAgentName()+" for "+getObsProperty("task").stringValue());
+        String agentName = getCurrentOpAgentId().getAgentName();
+        estimates.put(agentName, bidValue);
+        
+        String taskName = getObsProperty("task").stringValue();
+        
+        System.out.println("Received bid from "+agentName+" for "+taskName);
     }
     
     @OPERATION

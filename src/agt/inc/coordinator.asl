@@ -7,12 +7,13 @@
       .at("now + 5 seconds", {+!decide(Id)}).
 
 +!decide(Id)
-   <- Id::stop.
+   <- 
+ 	Id::aggregateAndChooseBest;
+	Id::stop.
 
 +NS::winner(W) : W \== no_winner
    <- ?NS::task(S);
       ?NS::best_bid(V);
-      jia.aggregateAndChooseBest(10, 20);
       .print("Winner for ", S, " is ",W," with ", V).
 
 { include("$jacamoJar/templates/common-cartago.asl") }

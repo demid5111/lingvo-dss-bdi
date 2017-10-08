@@ -1,19 +1,18 @@
 mas ldss_auction {
 	
-    agent bob: auctioneer.asl{
+    agent bob: coordinator.asl{
     	goals: start(a1,"estimate_rice_conflict(India, 2016)")
     }
   
-	agent rice_transporter   : participant.asl
-	agent melnitza   : participant.asl
-	agent miller_agent: participant.asl
-	agent ecolog : participant.asl
-	agent gov_social_politics : participant.asl
-	agent gov_politics : participant.asl
-	agent fermers : participant.asl
+	agent rice_transporter   : expert.asl
+	agent melnitza   : expert.asl
+	agent miller_agent: expert.asl
+	agent ecolog : expert.asl
+	agent gov_social_politics : expert.asl
+	agent gov_politics : expert.asl
+	agent fermers : expert.asl
     
     // agent source path
-    asl-path: src/agt
-              src/agt/inc
+    asl-path: src/agt/inc
 }
 
