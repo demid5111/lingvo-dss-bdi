@@ -21,10 +21,13 @@ public class getMyEstimates extends DefaultInternalAction {
 	static
     {
 		estimates = new HashMap<String, String>();
-		estimates.put("alice", "b");
-		estimates.put("maria", "d");
-		estimates.put("francois", "e");
-		estimates.put("giacomo", "f");
+		estimates.put("rice_transporter", Constants.rice_transporter);
+		estimates.put("melnitza", Constants.melnitza);
+		estimates.put("miller_agent", Constants.miller_agent);
+		estimates.put("ecolog", Constants.ecolog);
+		estimates.put("gov_social_politics", Constants.gov_social_politics);
+		estimates.put("gov_politics", Constants.gov_politics);
+		estimates.put("fermers", Constants.fermers);
     }
 
 	/**

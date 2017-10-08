@@ -1,13 +1,16 @@
 mas ldss_auction {
 	
     agent bob: auctioneer.asl{
-    	goals: start(a1,"flight_ticket(paris,athens,15/12/2015)")
+    	goals: start(a1,"estimate_rice_conflict(India, 2016)")
     }
   
-	agent alice   : participant.asl
-	agent maria   : participant.asl
-	agent francois: participant.asl
-	agent giacomo : participant.asl
+	agent rice_transporter   : participant.asl
+	agent melnitza   : participant.asl
+	agent miller_agent: participant.asl
+	agent ecolog : participant.asl
+	agent gov_social_politics : participant.asl
+	agent gov_politics : participant.asl
+	agent fermers : participant.asl
     
     // agent source path
     asl-path: src/agt
