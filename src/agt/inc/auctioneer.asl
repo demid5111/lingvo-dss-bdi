@@ -1,15 +1,17 @@
-!start. // initial goal
++!start(Id,P)
+   <- makeArtifact(Id, "ldss_auction.AuctionArtifact", [], ArtId);
+      .print("Auction artifact created for ",P);
+      Id::focus(ArtId);  // place observable properties of this auction in a particular name space
+      Id::start(P);
+      .broadcast(achieve,focus(Id));  // ask all others to focus on this new artifact
+      .at("now + 5 seconds", {+!decide(Id)}).
 
-+!start
-   <- start("flight_ticket(paris,athens,15/12/2015)");
-      .at("now + 10 seconds", {+!decide}).
++!decide(Id)
+   <- Id::stop.
 
-+!decide
-   <- stop.
-
-+winner(W) : W \== no_winner
-   <- ?task(S);
-      ?best_bid(V);
++NS::winner(W) : W \== no_winner
+   <- ?NS::task(S);
+      ?NS::best_bid(V);
       .print("Winner for ", S, " is ",W," with ", V).
 
 { include("$jacamoJar/templates/common-cartago.asl") }
