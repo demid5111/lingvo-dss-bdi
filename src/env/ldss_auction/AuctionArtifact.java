@@ -45,5 +45,11 @@ public class AuctionArtifact extends Artifact {
         }
         System.out.println("Received bid "+bidValue+" from "+getCurrentOpAgentId().getAgentName()+" for "+getObsProperty("task").stringValue());
     }
+    
+    @OPERATION
+    public String getMyEstimates(String name, String res){
+    	res = "name";
+    	return res;
+    }
 }
 
