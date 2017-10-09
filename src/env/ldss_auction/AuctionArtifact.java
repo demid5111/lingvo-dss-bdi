@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import cartago.*;
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2hflts.TT2HFLTS;
@@ -68,10 +70,40 @@ public class AuctionArtifact extends Artifact {
     	int targetScaleSize = 7;
     	String inputFilePath = "/Users/demidovs/Documents/Projects/lingvo-dss/src/main/resources/description_multilevel.json";
     	TTJSONMultiLevelInputModel model = ttjsonReader.readJSONMultiLevelDescription(inputFilePath);
-    	System.out.println("Successfully read a model");
+    	
+    	// we will set another estimations that we get from agents in this simulation
+    	model.setEstimations(null);
+    	
+    	// scales are very important for further calculations
     	TTNormalizedTranslator.registerScalesBatch(model.getScales());
-    	System.out.println("Successfully registered scales");
-        List<ArrayList<ArrayList<TT2HFLTS>>> all = TTUtils.getAllEstimationsFromMultiLevelJSONModel(model, 7);
+
+    	ObjectMapper mapper = new ObjectMapper();
+    	
+    	// create fake JSON string, like:
+    	// {
+    	// 		"estimations": {
+    	//			"agent_name" : [
+    	//				<...estimations...>
+    	//			], ...
+    	//		}
+    	// }
+    	String finalJSON = "{\n \"estimations\":\n {\n";
+    	List<String> l = new ArrayList<String>(estimates.keySet());
+    	for (int i = 0; i < l.size(); i++) {
+    		finalJSON += "\"" + l.get(i) + "\": [" + estimates.get(l.get(i)) + "]";
+    		if (i+1<l.size()){
+    			finalJSON += ",";
+    		}
+    	}
+    	finalJSON += "}\n}";
+    	
+    	// create an obscured version of the model which contains only estimations
+    	TTJSONMultiLevelInputModel newModel =  mapper.readValue(finalJSON, TTJSONMultiLevelInputModel.class);
+    	
+    	// set those estimations to the full model
+    	model.setEstimations(newModel.getEstimations());
+    	
+    	List<ArrayList<ArrayList<TT2HFLTS>>> all = TTUtils.getAllEstimationsFromMultiLevelJSONModel(model, 7);
         System.out.println("Successfully got all estimations");
         // Step 1. Aggregate by abstraction level
         TT2HFLTSMHTWOWAMultiLevelOperator tt2HFLTSMHTWOWAMultiLevelOperator = new TT2HFLTSMHTWOWAMultiLevelOperator();
@@ -118,19 +150,16 @@ public class AuctionArtifact extends Artifact {
                 return TTUtils.compareTT2HFLTS(o1.getValue(), o2.getValue());
             }
         }));
-
-        for (Pair<String, TT2HFLTS> stringTT2HFLTSPair: resZippedVec){
-            TTAlternativeModel altInstance = model.getAlternatives()
-                    .stream()
-                    .filter((TTAlternativeModel ttAlternativeModel) -> ttAlternativeModel.getAlternativeID()
-                            .equals(stringTT2HFLTSPair.getKey()))
-                    .findFirst()
-                    .orElse(null);
-            System.out.println(stringTT2HFLTSPair.getKey() + ' ' + altInstance.getAlternativeName());
-        }
     	
     	// 2. set the winner
-    	currentWinner = getCurrentOpAgentId().getAgentName();
+        TTAlternativeModel altInstance = model.getAlternatives()
+                .stream()
+                .filter((TTAlternativeModel ttAlternativeModel) -> ttAlternativeModel.getAlternativeID()
+                        .equals(resZippedVec.get(0).getKey()))
+                .findFirst()
+                .orElse(null);
+        
+    	currentWinner = resZippedVec.get(0).getKey() + " " + altInstance.getAlternativeName();
     }
     
     @OPERATION 

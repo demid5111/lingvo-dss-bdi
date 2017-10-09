@@ -45,7 +45,7 @@ public class getMyEstimates extends DefaultInternalAction {
         }
         
         String agentName = ((Atom)args[1]).toString();
-        ts.getAg().getLogger().info("[jia.getMyEstimates] agentName="+agentName);
+//        ts.getAg().getLogger().info("[jia.getMyEstimates] agentName="+agentName);
         
         return un.unifies(args[0], new Atom(estimates.get(agentName)));
     }
