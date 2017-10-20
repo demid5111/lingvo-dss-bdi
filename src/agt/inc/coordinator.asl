@@ -20,7 +20,7 @@
    	?NS::task(S);
    	// T - task name, S - task+context
    	jia.common.splitTaskForName(T, S);
-    .print("Winner for ", T, " is ",W," with ", V, "\n\n\n\n").
+    .print("Winner for ", T, " is ",W, "\n\n\n\n").
 
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }
